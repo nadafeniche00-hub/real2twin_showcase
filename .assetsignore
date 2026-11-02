@@ -6,3 +6,4 @@ wrangler.jsonc
 .github
 scripts
 node_modules
+notion-weeks.json
