@@ -32,7 +32,7 @@ const ETTELN = {
   ],
   // honest project status, used by the Report button. status: done | partial | todo
   progress: [
-    { area: "Context research", item: "Steckbrief, task list and briefing reviewed; Etteln / DiDoZ platform inventoried (VC Map layers, 3D Tiles, sensors)", status: "done" },
+    { area: "Context research", item: "Project documents and briefing reviewed; Etteln / DiDoZ platform inventoried (VC Map layers, 3D Tiles, sensors)", status: "done" },
     { area: "Context research", item: "Open questions for TH OWL and Etteln collected (see briefing, section 8)", status: "partial", note: "Drafted, not yet asked." },
     { area: "Data access", item: "Public Etteln 3D Tiles, ortho, terrain and FROST sensor API reachable from the web app", status: "done" },
     { area: "Data access", item: "Raw drone images, flight logs, ground control points from DiDoZ", status: "todo", note: "Not requested yet; not public." },

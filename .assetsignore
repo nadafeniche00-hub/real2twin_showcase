@@ -1,0 +1,8 @@
+README.md
+.gitignore
+wrangler.jsonc
+.assetsignore
+.banned-strings.txt
+.github
+scripts
+node_modules

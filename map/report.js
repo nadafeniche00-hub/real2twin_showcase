@@ -63,7 +63,7 @@ ${byArea.map((a) => `<h3 style="margin:14px 0 4px;font-size:1rem">${esc(a)}</h3>
 <li>Run a first small capture, a baseline splat and a segmentation test; define the accuracy target in cm.</li>
 <li>Start the licence table and the legal checks (drone category, airspace, DSGVO).</li>
 </ol>
-<p class="sub">Sources: Steckbrief (Real2Twin), task description of 26 Oct 2026, start-up briefing of 8 Oct 2026, public VC Map configuration of the Etteln platform. Status entries are maintained by hand in <code>data.js</code> (<code>progress</code>, <code>limitations</code>).</p>
+<p class="sub">Sources: project documents and the public VC Map configuration of the Etteln platform. Status entries are maintained by hand in <code>data.js</code> (<code>progress</code>, <code>limitations</code>).</p>
 </body></html>`;
   }
 
