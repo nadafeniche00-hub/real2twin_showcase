@@ -1,0 +1,39 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="robots" content="noindex, nofollow">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Real2Twin Etteln</title>
+<style>
+:root{--bg:#f6f5f1;--fg:#1d2428;--mut:#5d6a70;--card:#fff;--line:#dcd9d0;--acc:#0b6e69}
+@media (prefers-color-scheme:dark){:root{--bg:#14191b;--fg:#e8ecec;--mut:#9aa8ad;--card:#1d2427;--line:#2f3a3e;--acc:#4fc3bb}}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--fg);font:16px/1.55 system-ui,Segoe UI,sans-serif}
+main{max-width:980px;margin:0 auto;padding:40px 16px 64px}
+h1{font-size:2rem;margin:0 0 .3em}
+.lead{color:var(--mut);font-size:1.1rem;max-width:42em}
+.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:16px;margin-top:32px}
+a.card{display:block;background:var(--card);border:1px solid var(--line);border-radius:12px;padding:20px;text-decoration:none;color:inherit}
+a.card:hover{border-color:var(--acc)}
+.soon{opacity:.6;border-style:dashed}
+.card b{display:block;font-size:1.1rem;margin-bottom:.3em;color:var(--acc)}
+.card span{color:var(--mut)}
+footer{margin-top:40px;color:var(--mut);font-size:.9rem}
+</style>
+</head>
+<body>
+<main>
+<h1>Etteln as a living digital model</h1>
+<p class="lead">Real2Twin keeps a 3D model of a village up to date from ordinary photos. This page shows what exists today for Etteln, in the order we would walk you through it.</p>
+<div class="grid">
+  <a class="card" href="map/index.html"><b>1. Your village in 3D</b><span>Every building in Etteln on a map you can tilt and click. Each one has a type, a height and a code.</span></a>
+  <div class="card soon"><b>2. From photos to 3D</b><span>One building, walked around with a camera, rebuilt by the computer and split into parts (walls, roof, windows). Coming soon.</span></div>
+  <div class="card soon"><b>3. Then and now</b><span>Slide between two surveys of the same place. This is what keeps the model true over time. Coming soon.</span></div>
+  <div class="card soon"><b>4. For the fire brigade</b><span>Access roads, hydrants and assembly points on the same map. In preparation.</span></div>
+  <a class="card" href="progress.html"><b>5. Where we are</b><span>Plain-language progress: what was done, what runs now, what comes next.</span></a>
+</div>
+<footer>Project Real2Twin, TH OWL, with Borchen-Etteln. Work in progress; data from Open.NRW and OpenStreetMap.</footer>
+</main>
+</body>
+</html>

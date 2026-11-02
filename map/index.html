@@ -1,0 +1,50 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="robots" content="noindex, nofollow">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Etteln Digital Twin Map</title>
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<aside id="panel">
+  <h1>Etteln, DiDoZ</h1>
+  <p class="sub">Digital village twin · Borchen, NRW</p>
+  <nav id="tabs">
+    <button data-tab="layers" class="on">Layers</button>
+    <button data-tab="project">Project</button>
+    <button data-tab="people">People</button>
+    <button data-tab="sources">Sources</button>
+  </nav>
+  <section id="tab-layers"></section>
+  <section id="tab-project" hidden></section>
+  <section id="tab-people" hidden></section>
+  <section id="tab-sources" hidden></section>
+</aside>
+<main id="map" tabindex="0" aria-label="Map of Etteln">
+  <div id="cesium" hidden></div>
+  <div id="tiles"></div>
+  <div id="swipeline" hidden></div>
+  <svg id="vec"></svg>
+  <div id="markers"></div>
+  <div id="ctrl">
+    <button id="zin" aria-label="Zoom in">+</button>
+    <button id="zout" aria-label="Zoom out">&minus;</button>
+    <button id="m3d" aria-label="Toggle 3D view" title="2D / 3D">3D</button>
+    <button id="home" aria-label="Reset view">&#8962;</button>
+    <button id="locate" aria-label="My location">&#9678;</button>
+    <button id="link" aria-label="Copy link to this view">&#128279;</button>
+  </div>
+  <div id="hint"></div>
+  <div id="measurebar" hidden><span id="measureout"></span> <button class="sm" id="mundo">Undo</button> <button class="sm" id="mclear">Clear</button> <button class="sm" id="mexit">Done</button></div>
+  <div id="coords"></div>
+  <div id="popup" hidden></div>
+  <div id="attr">&copy; <a href="https://www.openstreetmap.org/copyright" target="_blank" rel="noopener">OpenStreetMap</a> contributors</div>
+</main>
+<script src="data.js"></script>
+<script src="view3d.js"></script>
+<script src="report.js"></script>
+<script src="app.js"></script>
+</body>
+</html>
