@@ -106,11 +106,6 @@ const ETTELN = {
     ["Fraunhofer IEE", "Partner"],
     ["dena", "Partner"]
   ],
-  ahle: [
-    ["Steckbrief", "CEO, Gaia-X European Association"],
-    ["Etteln strategy, OpenCommons", "CEO, FIWARE Foundation"],
-    ["borchen.de", "Ortsvorsteher of Etteln"]
-  ],
   sources: [
     ["Kreis Paderborn: ALKIS-Daten der Gemeinde Borchen (Shape, open data, no owner data)", "https://www.kreis-paderborn.de/opendata/alkis/pakete_pro_gemeinde/Borchen_SHAPE.html"],
     ["Open.NRW catalogue entry: ALKIS-Daten der Gemeinde Borchen", "https://ckan.open.nrw.de/dataset/361fd93e-3530-4551-9498-29ffd8db9cf3"],
@@ -122,7 +117,6 @@ const ETTELN = {
     ["business-geomatics.com article", null],
     ["borchen.de DiDoZ page", null],
     ["kommunal.de Datenraum article", null],
-    ["OpenCommons: Ulrich Ahle", "https://opencommons.org/Ulrich_Ahle"],
     ["leinetal24: IEEE Smart City Award", "https://www.leinetal24.de/welt/wettbewerb-etteln-nrw-digitalstes-dorf-deutschlands-auszeichnung-vor-hongkong-borchen-paderborn-zr-93429536.html"],
     ["inside-digital: Das smarteste Dorf der Welt", "https://www.inside-digital.de/news/das-smarteste-dorf-der-welt-unterwegs-in-etteln"]
   ]

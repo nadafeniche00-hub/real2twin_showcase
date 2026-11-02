@@ -485,8 +485,7 @@
     return t;
   };
   $("#tab-project").append(table(ETTELN.facts));
-  $("#tab-people").append(table(ETTELN.people), el("h2", { textContent: "Ulrich Ahle: titles differ by source" }),
-    table(ETTELN.ahle), el("div", { className: "note", textContent: "Confirm his current role before addressing him in a specific capacity." }));
+  $("#tab-people").append(table(ETTELN.people));
   $("#tab-sources").append(el("ul", {}, ...ETTELN.sources.map(([t, u]) =>
     el("li", {}, u ? el("a", { href: u, textContent: t, target: "_blank", rel: "noopener" }) : t))));
   $("#tabs").addEventListener("click", (e) => {
