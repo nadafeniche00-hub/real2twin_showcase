@@ -2,6 +2,7 @@
 <html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
 <meta name="robots" content="noindex">
 <title>Etteln Live Twin</title>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.css">
 <style>
 :root{--bg:#f6f5f1;--fg:#1d2428;--mut:#5d6a70;--card:#fff;--line:#dcd9d0;--acc:#0b6e69}
 @media (prefers-color-scheme:dark){:root{--bg:#14191b;--fg:#e8ecec;--mut:#9aa8ad;--card:#1d2427;--line:#2f3a3e;--acc:#4fc3bb}}
@@ -17,7 +18,7 @@ header h1{font-size:1.05rem;margin:0}
 aside{padding:14px 16px;overflow:auto;border-right:1px solid var(--line)}
 label{display:block;font-size:.8rem;color:var(--mut);margin:12px 0 4px;text-transform:uppercase;letter-spacing:.06em}
 select{width:100%;padding:9px;border-radius:8px;border:1px solid var(--line);background:var(--card);color:var(--fg);font:inherit}
-#map{position:relative;width:100%;aspect-ratio:1/1;background:var(--card);border:1px solid var(--line);border-radius:12px;margin-top:14px;overflow:hidden}
+#map{position:relative;width:100%;aspect-ratio:1/1;z-index:0;background:var(--card);border:1px solid var(--line);border-radius:12px;margin-top:14px;overflow:hidden}
 #map svg{position:absolute;inset:0;width:100%;height:100%}
 .dot{position:absolute;transform:translate(-50%,-50%);width:18px;height:18px;border-radius:50%;background:var(--acc);border:3px solid #fff;box-shadow:0 0 0 2px var(--acc);cursor:pointer;transition:transform .15s}
 .dot:hover,.dot.on{transform:translate(-50%,-50%) scale(1.5);z-index:2}
@@ -39,44 +40,53 @@ iframe{position:absolute;inset:0;width:100%;height:100%;border:0}
 <aside>
   <label for="sel">Jump to a place</label>
   <select id="sel"></select>
-  <div id="map" aria-label="Village overview"><svg viewBox="0 0 100 100" preserveAspectRatio="none"><rect width="100" height="100" fill="none"/><path d="M0 62 C25 55,45 70,100 48" stroke="#9db8b5" stroke-width="1.2" fill="none"/><path d="M12 100 C30 70,55 40,70 0" stroke="#c9c4b6" stroke-width="1.6" fill="none"/><path d="M0 20 C30 30,60 25,100 35" stroke="#c9c4b6" stroke-width="1" fill="none"/></svg></div>
+  <div id="map" aria-label="Village map: aerial photo with building outlines"></div>
   <ul id="list"></ul>
   <div id="cfg">Stream address (your laptop for now)<input id="ps" value=""></div>
 </aside>
 <main><iframe id="fr" allow="autoplay; fullscreen; microphone" title="Live 3D twin"></iframe>
   <div id="hover"><b></b><p></p></div></main>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.js"></script>
 <script>
-// Checkpoints: the saved viewpoints of the public VC Map project (see map/data.js) plus the overview.
+// Checkpoints = the six fixed Etteln cameras of the Unreal level (positions in the sketch are indicative).
 const POI=[
- {id:"overview",name:"Overview",lat:51.6226,lon:8.7671,note:"The whole village at a glance."},
- {id:"mitfahrbank",name:"Mitfahrbank",lat:51.6281,lon:8.7625,note:"The shared-ride bench on the main lane."},
- {id:"gemeindehalle",name:"Gemeindehalle",lat:51.6285,lon:8.7635,note:"The village hall, a central meeting place."},
- {id:"church",name:"Church",lat:51.6311,lon:8.7610,note:"The church and its tower, the landmark of Etteln."}
+ {id:"ref3",cam:"ref3",name:"Overview from above",mx:-230.4,my:-34.9,note:"The village from 90 m up, looking down at 42 degrees."},
+ {id:"ref1",cam:"ref1",name:"Church (west side)",mx:-200.4,my:-34.9,note:"Eye level west of the church, looking east."},
+ {id:"ref2",cam:"ref2",name:"The stream",mx:-104.1,my:-10.4,note:"Eye level at the stream that runs through the village."},
+ {id:"ref4",cam:"ref4",name:"Main road",mx:-113.6,my:61.4,note:"A street near the church, seen from 1.7 m."},
+ {id:"ref5",cam:"ref5",name:"Fields",mx:-481.6,my:-249.7,note:"The edge of an arable field, looking back at the village."},
+ {id:"ref6",cam:"ref6",name:"Far vista",mx:637.5,my:459.5,note:"900 m from the church, 76 m up: the whole village in its landscape."}
 ];
-const B={n:51.6340,s:51.6200,w:8.7560,e:8.7720}; // rough frame around the checkpoints, for the overview sketch only
+// Camera positions: Unreal metres (X east, Y south) around the church (-122.7, 15.0), converted to lat/lon; accurate to a few tens of metres.
+const CH={lat:51.6311,lon:8.7610,x:-122.7,y:15.0};
+POI.forEach(p=>{p.lat=CH.lat-(p.my-CH.y)/111320;p.lon=CH.lon+(p.mx-CH.x)/69100});
 const $=s=>document.querySelector(s),fr=$('#fr'),map=$('#map'),sel=$('#sel'),list=$('#list'),hov=$('#hover'),stat=$('#status');
 const q=new URLSearchParams(location.search);
 const ps=q.get('ps')||localStorage.getItem('r2t_ps')||'http://localhost';
 $('#ps').value=ps;
-function load(u){try{localStorage.setItem('r2t_ps',u)}catch(e){}stat.className='';stat.lastChild.textContent='connecting to '+u;fr.src=u}
+function load(u){try{localStorage.setItem('r2t_ps',u)}catch(e){}stat.className='';stat.lastChild.textContent='connecting to '+u;fr.src=u+(u.includes('?')?'&':'/?')+'HoveringMouse=true'}  // free mouse: right-drag looks, WASD flies (as in the Elen twin)
 $('#ps').addEventListener('change',e=>load(e.target.value.trim()));
 fr.addEventListener('load',()=>{stat.className='ok';stat.lastChild.textContent='stream page loaded'});
-function pos(p){return {x:(p.lon-B.w)/(B.e-B.w)*100,y:(B.n-p.lat)/(B.n-B.s)*100}}
+
 function show(p){hov.style.display='block';hov.querySelector('b').textContent=p.name;hov.querySelector('p').textContent=p.note;mark(p.id,true)}
 function hide(){hov.style.display='none';mark(null,false)}
 function mark(id,on){document.querySelectorAll('[data-id]').forEach(e=>e.classList.toggle('on',on&&e.dataset.id===id))}
-function go(p){sel.value=p.id;show(p);
-  // Sent to the player page; the Unreal level moves the camera when it handles "r2t-goto" (see README note in chat).
-  const msg={type:'r2t-goto',id:p.id,name:p.name,lat:p.lat,lon:p.lon};
-  try{fr.contentWindow.postMessage(msg,'*')}catch(e){}
+const GOTO='http://localhost:8092/goto';  // tiny local server on the GPU laptop; the game flies the camera (same pattern as the Elen twin)
+function go(p){sel.value=p.id;show(p);try{sel.blur();fr.focus()}catch(e){}lm.panTo([p.lat,p.lon]);
+  fetch(GOTO,{method:'POST',headers:{'content-type':'application/json'},body:JSON.stringify({cam:p.cam})}).then(r=>{stat.lastChild.textContent=r.ok?'flying to '+p.name:'jump failed'}).catch(()=>{stat.lastChild.textContent='jump server not running on this computer'});
 }
+const lm=L.map('map',{zoomControl:true,attributionControl:true}).setView([CH.lat,CH.lon],16);
+L.tileLayer.wms('https://www.wms.nrw.de/geobasis/wms_nw_dop',{layers:'nw_dop_rgb',format:'image/jpeg',attribution:'Geobasis NRW'}).addTo(lm);
+L.tileLayer.wms('https://www.wms.nrw.de/geobasis/wms_nw_alkis',{layers:'adv_alkis_gebaeude',format:'image/png',transparent:true,attribution:'Geobasis NRW (ALKIS)'}).addTo(lm);
+const mk={};
 POI.forEach(p=>{
   sel.insertAdjacentHTML('beforeend',`<option value="${p.id}">${p.name}</option>`);
-  const o=pos(p);const d=document.createElement('div');d.className='dot';d.dataset.id=p.id;d.style.left=o.x+'%';d.style.top=o.y+'%';d.innerHTML=`<span class="tip">${p.name}</span>`;
-  d.onmouseenter=()=>show(p);d.onmouseleave=hide;d.onclick=()=>go(p);map.appendChild(d);
+  const m=L.marker([p.lat,p.lon],{icon:L.divIcon({className:'',html:`<div class="dot" data-id="${p.id}" style="position:relative;left:0;top:0"><span class="tip">${p.name}</span></div>`,iconSize:[18,18]})}).addTo(lm);
+  m.on('mouseover',()=>show(p));m.on('mouseout',hide);m.on('click',()=>go(p));mk[p.id]=m;
   const li=document.createElement('li');li.dataset.id=p.id;li.innerHTML=`<b>${p.name}</b><span>${p.note}</span>`;
-  li.onmouseenter=()=>show(p);li.onmouseleave=hide;li.onclick=()=>go(p);list.appendChild(li);
+  li.onmouseenter=()=>{show(p);lm.panTo([p.lat,p.lon])};li.onmouseleave=hide;li.onclick=()=>go(p);list.appendChild(li);
 });
+lm.fitBounds(L.latLngBounds(POI.map(p=>[p.lat,p.lon])).pad(0.25));
 sel.onchange=()=>go(POI.find(p=>p.id===sel.value));
 load(ps);
 </script></body></html>
